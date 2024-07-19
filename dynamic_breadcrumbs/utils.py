@@ -135,7 +135,7 @@ class BreadcrumbsItem:
                 return apps.get_app_config(self.name_raw).verbose_name
             except Exception:
                 pass
-        return self.name_raw
+        return self.name_raw.replace('-', ' ')
 
     def as_dict(self):
         result = {
