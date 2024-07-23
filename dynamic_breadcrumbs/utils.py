@@ -45,6 +45,7 @@ def validate_path(path):
     # Check each path component's length
     for component in components:
         if component in ['terms', 'account', 'users']:
+            logger.warning(f"Exluded path component: {component}")
             return ""
         if len(component) > app_settings.PATH_MAX_COMPONENT_LENGTH:
             logger.warning("Path component length exceeded in: %s", path)
