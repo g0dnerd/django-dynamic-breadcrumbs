@@ -41,11 +41,11 @@ def validate_path(path):
         logger.warning("Path depth exceeded for: %s", path)
         return ""
 
-    if component in ['terms', 'account', 'users']:
-        return ""
 
     # Check each path component's length
     for component in components:
+        if component in ['terms', 'account', 'users']:
+            return ""
         if len(component) > app_settings.PATH_MAX_COMPONENT_LENGTH:
             logger.warning("Path component length exceeded in: %s", path)
             return ""
