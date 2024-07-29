@@ -31,7 +31,7 @@ def validate_path(path):
 
     if app_settings.PATH_XSS_SAFE_MODE:
         # Ensure the path contains only alphanumeric characters, dashes, underscores, and slashes
-        if not re.match(r"^[a-zA-Z0-9_\-/]*$", path):
+        if not re.match(r"^[a-zA-Z0-9_~\-/]*$", path):
             logger.warning("Invalid path provided: %s", path)
             return ""
 
@@ -44,9 +44,6 @@ def validate_path(path):
 
     # Check each path component's length
     for component in components:
-        if component in ['terms', 'account', 'users']:
-            logger.warning("Breadcrumb URL path ExclusionError")
-            return ""
         if len(component) > app_settings.PATH_MAX_COMPONENT_LENGTH:
             logger.warning("Path component length exceeded in: %s", path)
             return ""
@@ -103,14 +100,31 @@ class Breadcrumbs:
         if (app_settings.SHOW_AT_BASE_PATH and not parts) or parts:
             self._add_home()
 
-        if parts == []:
+        if parts == [] or 'login' in parts:
             return
 
+        last = None
         for i, item in enumerate(parts):
-            path = urljoin(path, item + "/")
-            b_item = BreadcrumbsItem(
-                base_url=self.base_url, name_raw=item, path=path, position=i + 2
-            )
+            if last == 'event-dashboard':
+                last = item
+                continue
+            if item == 'event-dashboard':
+                path = urljoin(path, item + "/" + parts[i+1] + "/")
+                b_item = BreadcrumbsItem(
+                    base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
+                )
+            elif item in ['users', 'accounts']:
+                b_item = BreadcrumbsItem(
+                    base_url=self.base_url, name_raw='My Profile', path=path, position=i + 2
+                )
+                self.items.append(b_item)
+                break
+            else:
+                path = urljoin(path, item + "/")
+                b_item = BreadcrumbsItem(
+                    base_url=self.base_url, name_raw=item, path=path, position=i + 2
+                )
+            last = item
             self.items.append(b_item)
 
 
@@ -139,8 +153,6 @@ class BreadcrumbsItem:
                 return apps.get_app_config(self.name_raw).verbose_name
             except Exception:
                 pass
-        if 'event-dashboard' in self.path:
-            print(f'Event Dashboard hit: {self.path}')
         return self.name_raw.replace('-', ' ')
 
     def as_dict(self):
