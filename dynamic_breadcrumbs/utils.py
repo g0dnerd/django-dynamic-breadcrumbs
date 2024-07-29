@@ -45,8 +45,8 @@ def validate_path(path):
     # Check each path component's length
     for component in components:
         if component in ['terms', 'account', 'users']:
-            logger.warning(f"Exluded path component: {component}")
-            return "home"
+            logger.warning("Breadcrumb URL path ExclusionError")
+            return ""
         if len(component) > app_settings.PATH_MAX_COMPONENT_LENGTH:
             logger.warning("Path component length exceeded in: %s", path)
             return ""
@@ -139,6 +139,8 @@ class BreadcrumbsItem:
                 return apps.get_app_config(self.name_raw).verbose_name
             except Exception:
                 pass
+        if 'event-dashboard' in self.path:
+            print(f'Event Dashboard hit: {self.path}')
         return self.name_raw.replace('-', ' ')
 
     def as_dict(self):
