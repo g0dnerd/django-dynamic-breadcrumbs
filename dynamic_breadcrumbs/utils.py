@@ -108,11 +108,17 @@ class Breadcrumbs:
             if last == 'event-dashboard':
                 last = item
                 continue
-            if item in ['event-dashboard', 'cube']:
+            if item == 'event-dashboard':
                 path = urljoin(path, item + "/" + parts[i+1] + "/")
                 b_item = BreadcrumbsItem(
                     base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
                 )
+            elif item == 'cube':
+                b_item = BreadcrumbsItem(
+                    base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
+                )
+                self.items.append(b_item)
+                break
             elif item in ['users', 'accounts']:
                 b_item = BreadcrumbsItem(
                     base_url=self.base_url, name_raw='My Profile', path=path, position=i + 2
