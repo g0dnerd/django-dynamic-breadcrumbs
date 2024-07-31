@@ -113,7 +113,7 @@ class Breadcrumbs:
                 b_item = BreadcrumbsItem(
                     base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
                 )
-            elif item == 'cube':
+            elif item == 'cube' and 'admin' not in parts:
                 b_item = BreadcrumbsItem(
                     base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
                 )
