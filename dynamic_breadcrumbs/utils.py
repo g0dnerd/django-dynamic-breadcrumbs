@@ -105,10 +105,10 @@ class Breadcrumbs:
 
         last = None
         for i, item in enumerate(parts):
-            if last == 'event-dashboard':
+            if last in ['event-dashboard', 'admin-dashboard']:
                 last = item
                 continue
-            if item == 'event-dashboard':
+            if item in ['event-dashboard', 'admin-dashboard']:
                 path = urljoin(path, item + "/" + parts[i+1] + "/")
                 b_item = BreadcrumbsItem(
                     base_url=self.base_url, name_raw=item+': ' + parts[i+1], path=path, position=i + 2
